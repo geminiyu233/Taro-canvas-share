@@ -29,7 +29,10 @@
     "@tarojs/taro-tt": "1.2.4",
     "@tarojs/taro-weapp": "1.2.4",
     "nervjs": "^1.3.9",
-    "nerv-devtools": "^1.3.9"
+    "nerv-devtools": "^1.3.9",
+    "classnames": "^2.2.6",
+    "lodash": "^4.17.10",
+    "prop-types": "^15.6.2"
   },
   "devDependencies": {
     "@types/react": "^16.4.6",

@@ -30,7 +30,7 @@ function canvasToTempFilePath(option, context) {
     Taro.canvasToTempFilePath({
       ...option,
       success: resolve,
-      fail: reject,
+      fail: reject
     }, context)
   })
 }
@@ -106,7 +106,6 @@ class CanvasShare extends Component {
   }
 
   draw = () => {
-    console.log(1)
     Taro.showLoading()
     const { canvasWidth, canvasHeight } = this.state
     const { avatarUrl, nickName } = this.props.userInfo
@@ -118,12 +117,14 @@ class CanvasShare extends Component {
       .then(([avatar, background]) => {
         console.log('[avatar, background]', avatar)
         console.log('[avatar, background]', background)
-        const ctx = Taro.createCanvasContext('share', this)
+        //调用一些 API 需要传入原生小程序的页面或者组件实例时，可以直接传入 this.$scope
+        //具体参考：https://nervjs.github.io/taro/docs/wx-relations.html
+        const ctx = Taro.createCanvasContext('share', this.$scope)
 
         const canvasW = rpx2px(canvasWidth * 2)
         const canvasH = rpx2px(canvasHeight * 2)
 
-        // 绘制背景
+        // 绘制背景(绘制图片到背景)
         ctx.drawImage(
           background.path,
           0,
@@ -131,9 +132,6 @@ class CanvasShare extends Component {
           canvasW,
           canvasH
         )
-        console.log('background.path', background.path)
-        console.log('canvasW', canvasW)
-        console.log('canvasH', canvasH)
 
         // 绘制头像
         const radius = rpx2px(90 * 2)
@@ -145,8 +143,6 @@ class CanvasShare extends Component {
           radius * 2,
           radius * 2,
         )
-        console.log('avatar.path', avatar.path)
-        console.log('radius', radius)
 
         // 绘制用户名
         ctx.setFontSize(60)
@@ -158,16 +154,13 @@ class CanvasShare extends Component {
           y + rpx2px(150 * 2)
         )
         ctx.stroke()
-        console.log(111111)
-        ctx.draw(false, () => {
-          console.log(22222222)
+        ctx.draw(false, setTimeout(() => {
           canvasToTempFilePath({
             canvasId: 'share',
-          }, this).then(({ tempFilePath }) => {
-            console.log('tempFilePath', tempFilePath)
+          }, this.$scope).then(({ tempFilePath }) => {
             this.setState({ imageFile: tempFilePath })
           })
-        })
+        }, 200))
 
         Taro.hideLoading()
         this.setState({ isDraw: true })
@@ -180,7 +173,7 @@ class CanvasShare extends Component {
 
   
   handleClose = () => {
-    this.triggerEvent('close')
+    this.props.onClick()
   }
 
   handleSave = () => {
@@ -200,7 +193,7 @@ class CanvasShare extends Component {
   }
 
   render () {
-    const { canvasWidth, canvasHeight, responsiveScale } = this.state
+    const { canvasWidth, canvasHeight, responsiveScale, imageFile } = this.state
     let { visible } = this.props
     let canvasWH = `width:${canvasWidth}px;height:${canvasHeight}px`
     let transform = `transform:scale(${responsiveScale});-webkit-transform:scale(${responsiveScale});`
@@ -209,7 +202,7 @@ class CanvasShare extends Component {
     let rootClass = classNames(
       'share',
       {
-        show: visible
+        'show': visible
       }
     )
     return (

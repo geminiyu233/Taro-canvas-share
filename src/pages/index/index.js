@@ -19,10 +19,8 @@ export default class Index extends Component {
   }
 
   componentWillMount () {
-    // 在没有 open-type=getUserInfo 版本的兼容处理
     Taro.getUserInfo({
       success: res => {
-        console.log('res', res)
         this.setState({
           userInfo: res.userInfo,
           hasUserInfo: true

@@ -33,6 +33,8 @@ npm run dev:alipay
 # H5
 npm run dev:h5
 
+```
+
 ### 目标功能
 
 - [x] 微信小程序生成图片，保存到相册

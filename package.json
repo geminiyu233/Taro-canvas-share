@@ -1,5 +1,5 @@
 {
-  "name": "myApp",
+  "name": "taro-canvas-share",
   "version": "1.0.0",
   "private": true,
   "description": "生成带信息的图片分享到朋友圈",

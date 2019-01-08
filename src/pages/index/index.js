@@ -19,14 +19,50 @@ export default class Index extends Component {
   }
 
   componentWillMount () {
-    Taro.getUserInfo({
-      success: res => {
-        this.setState({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      }
-    })
+  }
+
+  getUserInfo = () => {
+    
+    // "appid": "wx3198f237bfaf08de",
+    //2019010862799533
+    if (Taro.getEnv() === Taro.ENV_TYPE.WEAPP) {
+      Taro.getUserInfo({
+        success: res => {
+          this.setState({
+            userInfo: {
+              avatarUrl: res.userInfo.avatarUrl,
+              nickName: res.userInfo.nickName
+            },
+            hasUserInfo: true
+          })
+        }
+      })
+    } else if (Taro.getEnv() === Taro.ENV_TYPE.WEB) {
+      this.setState({
+        userInfo: {
+          avatarUrl: 'https://img.xiaomeipingou.com/_assets_home-share-bg.jpg',
+          nickName: '喻又'
+        },
+        hasUserInfo: true
+      })
+    } else if (Taro.getEnv() === Taro.ENV_TYPE.ALIPAY) {
+      my.getAuthCode({
+        scopes: 'auth_user',
+        success: (res) => {
+          my.getAuthUserInfo({
+            success: (userInfo) => {
+              this.setState({
+                userInfo: {
+                  avatarUrl: userInfo.avatar,
+                  nickName: userInfo.nickName
+                },
+                hasUserInfo: true
+              })
+            }
+          })
+        }
+      })
+    }
   }
 
   //事件处理函数
@@ -45,7 +81,7 @@ export default class Index extends Component {
         <CanvasShare onClick={this.close} userInfo={userInfo} visible={visible}></CanvasShare>
         <View className="userinfo">
           {
-            !hasUserInfo && <Button open-type="getUserInfo" onGetUserInfo={this.getUserInfo}> 获取头像昵称 </Button>
+            !hasUserInfo && <Button open-type="getUserInfo" onClick={this.getUserInfo}> 获取头像昵称 </Button>
           }
           {
             hasUserInfo && (

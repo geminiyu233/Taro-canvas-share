@@ -31,30 +31,30 @@
 }
 
 .share .content .footer {
-  width: 562rpx;
-  height: 100rpx;
+  width: 281Px;
+  height: 50Px;
   background: #fff;
-  border-top: 2rpx solid #e9e9e9;
+  border-top: 1Px solid #e9e9e9;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 28rpx;
+  font-size: 14Px;
 }
 
 .share .content .footer .close {
-  width: 100rpx;
-  height: 100rpx;
-  line-height: 100rpx;
+  width: 50Px;
+  height: 50Px;
+  line-height: 50Px;
   flex-grow: 0;
   flex-shrink: 0;
   text-align: center;
-  border-left: 2rpx solid #e9e9e9;
+  border-left: 1Px solid #e9e9e9;
 }
 
 .share .content .footer .save {
-  height: 100rpx;
-  line-height: 100rpx;
+  height: 50Px;
+  line-height: 50Px;
   flex-grow: 1;
   flex-shrink: 1;
   text-align: center;
@@ -74,5 +74,5 @@
 .share .content .canvas {
   display: inline-block;
   background: #fff;
-  margin: 60rpx 0 0 0;
+  margin: 30Px 0 0 0;
 }

@@ -66,7 +66,7 @@ const config = {
     }
   },
   h5: {
-    publicPath: '/',
+    publicPath: '/dist2',
     staticDirectory: 'static',
     module: {
       postcss: {

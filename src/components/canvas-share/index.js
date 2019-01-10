@@ -96,19 +96,6 @@ class CanvasShare extends Component {
     onClick: PropTypes.func
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      visible: nextProps.visible
-    }, () => {
-      if (this.state.visible && !this.state.beginDraw) {
-        this.draw()
-        this.setState({
-          beginDraw: true
-        })
-      }
-    })
-  }
-
   componentDidMount = () => {
     const designWidth = 375
     const designHeight = 603 // 这是在顶部位置定义，底部无tabbar情况下的设计稿高度
@@ -124,6 +111,19 @@ class CanvasShare extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      visible: nextProps.visible
+    }, () => {
+        if (this.state.visible && !this.state.beginDraw) {
+          this.draw()
+          this.setState({
+            beginDraw: true
+          })
+        }
+    })
+  }
+
   onClick (e) {
     this.props.onClick(e, ...arguments)
   }
@@ -134,30 +134,29 @@ class CanvasShare extends Component {
     const { avatarUrl, nickName } = this.props.userInfo
     
     if (Taro.getEnv() === Taro.ENV_TYPE.WEB) {
-      const ctx = document.getElementById('share').getContext('2d')
+      const myCanvas = document.getElementById('share')
+      let ctx = myCanvas.getContext('2d')
 
       // 绘制背景(绘制图片到背景)
       const canvasW = rpx2px(canvasWidth * 2)
       const canvasH = rpx2px(canvasHeight * 2)
-      let bgImg = new Image()
-      bgImg.src = 'https://img.xiaomeipingou.com/_assets_home-share-bg.jpg'
-      bgImg.crossOrigin="anonymous"
-      bgImg.onload = function(){
-        console.log(1)
-        ctx.globalCompositeOperation="destination-over" //source-over
-        ctx.drawImage(
-          bgImg,
-          0,
-          0,
-          canvasW,
-          canvasH
-        )
+
+      let bgImg = document.createElement('img')
+      bgImg.setAttribute('crossOrigin', '*')
+
+      bgImg.onload = () => {
+        ctx.drawImage(bgImg.src, 0, 0, canvasW, canvasH)
+        let dataURL = myCanvas.toDataURL("image/png", 1.0)
+        // const imageFile = convertBase64UrlToBlob(dataURL, "png")
+        this.setState({ imageFile: dataURL })
       }
+      //服务器设置允许跨域
+      bgImg.src = 'https://img.xiaomeipingou.com/_assets_home-share-bg.jpg'
 
       // 绘制头像
       const radius = rpx2px(90 * 2)
       const y = rpx2px(120 * 2)
-      let avatarImg = new Image()
+      let avatarImg = document.createElement('img')
       avatarImg.src = 'https://img.xiaomeipingou.com/_assets_home-share-bg.jpg'
       avatarImg.crossOrigin="anonymous"
       avatarImg.onload = function(){
@@ -182,12 +181,6 @@ class CanvasShare extends Component {
       )
       ctx.stroke()
 
-      let canvas = document.getElementById('share')
-      let dataURL = canvas.toDataURL("image/png", 1.0)
-      // const imageFile = convertBase64UrlToBlob(dataURL, "png")
-      
-      console.log('dataURL', dataURL)
-      this.setState({ imageFile: dataURL })
     } else {
       // 绘制背景(绘制图片到背景)
       const avatarPromise = getImageInfo(avatarUrl)
@@ -247,20 +240,16 @@ class CanvasShare extends Component {
                   _this.setState({ imageFile: tempFilePath.apFilePath })
                 }
               })
-            } else if (Taro.getEnv() === Taro.ENV_TYPE.WEB) {
-
             }
           }, 200))
-
-          Taro.hideLoading()
-          this.setState({ isDraw: true })
         })
         .catch(() => {
           this.setState({ beginDraw: false })
           Taro.hideLoading()
         })
       }
-    
+      Taro.hideLoading()
+      this.setState({ isDraw: true })
   }
 
   
@@ -291,16 +280,16 @@ class CanvasShare extends Component {
   render () {
     const { canvasWidth, canvasHeight, responsiveScale, imageFile, id } = this.state
     let { visible } = this.props
-    let canvasWH = `width:${canvasWidth*2}rpx;height:${canvasHeight*2}rpx`
+    let canvasWH = `width:${canvasWidth}px;height:${canvasHeight}px`
     let transform = `transform:scale(${responsiveScale});-webkit-transform:scale(${responsiveScale});`
-    let ImageW = `width:${canvasWidth/3*2}rpx`
-    let ImageWH = `${ImageW};height:${canvasHeight/3*2}rpx`
+    let ImageW = `width:${canvasWidth/3}px`
+    let ImageWH = `${ImageW};height:${canvasHeight/3}px`
     let rootClass = classNames(
       'share',
       {
         'show': visible
       }
-    )
+    ) 
     return (
       <View className={rootClass}>
         {
